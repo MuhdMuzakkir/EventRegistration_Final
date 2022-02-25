@@ -1,0 +1,23 @@
+﻿@using EventRegistration.Shared.Domain
+ 
+<h3>FormComponent</h3>
+<EditForm Model="@role" OnValidSubmit="@OnValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label>Role:</label>
+        <div>
+            <InputSelect @bind-Value="@role.RoleID" class="form-control"></InputSelect>
+                <ValidationMessage For="@(() => role.RoleID)" />
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success btn-block">
+        Create Role
+    </button>
+</EditForm>
+@code {
+    [Parameter] public Role role { get; set; }
+    [Parameter] public string ButtonText { get; set; } = "Save";
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+}

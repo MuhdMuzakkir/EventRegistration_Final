@@ -10,8 +10,8 @@ namespace EventRegistration.Server.IRepository
     public interface IUnitOfWork : IDisposable
     {
         Task Save(HttpContext httpContext);
+        IGenericRepository<Staff> Staffs { get; }
         IGenericRepository<Role> Roles { get; }
-        IGenericRepository<Role> Roless { get; }
         IGenericRepository<Venue> Venues { get; }
         
     }

@@ -1,0 +1,72 @@
+﻿@page "/venues/"
+@inject HttpClient _client
+@inject IJSRuntime js
+@attribute [Authorize]
+@using  Microsoft.AspNetCore.Authorization
+@using  Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using EventRegistration.Shared.Domain
+
+<h3 class="card-title">Event Venues</h3>
+<a href="/venues/create" class="btn btn-secondary">
+    <span class="oi oi-plus"></span>
+    Create New Venues
+</a>
+<br />
+<br />
+@if (Venues == null)
+{
+    <div class="alert alert-info">Loading Venues...</div>
+}
+else
+{
+    <table class="table table-responsive"></table>
+    <thead>
+        <tr>
+            <th>Venue Name</th>
+            <th>Actions</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var Venue in Venues)
+        {
+            <tr>
+                <td>@Venue.VenueName</td>
+                <td>
+                    <a href="/Venues/view/@Venue.VenueID" class="btn btn=primary">
+                        <span class="oi oi-book"></span>
+                    </a>
+                    <a href="/Venues/edit/@Venue.VenueID" class="btn btn=warning">
+                        <span class="oi oi-pencil"></span>
+                    </a>
+
+                    <button class="btn btn-danger" @onclick="@(()=>Delete(Venue.VenueID))">
+                        <span class="oi oi-delete"></span>
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+
+}
+<br />
+
+@code {
+    private List<Venue> Venues;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Venues = await _client.GetFromJsonAsync<List<Venue>>("api/venues");
+    }
+
+    async Task Delete(int VenueID)
+    {
+        var Venue = Venues.First(q => q.VenueID == VenueID);
+        var confirm = await js.InvokeAsync<bool>("Confirm", $"Do you want to delete {Venue.VenueName}?");
+        if (confirm)
+        {
+            await _client.DeleteAsync($"api/venues/{VenueID}");
+            await OnInitializedAsync();
+        }
+    }
+}

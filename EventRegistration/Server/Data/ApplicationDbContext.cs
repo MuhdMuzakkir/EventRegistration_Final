@@ -19,8 +19,8 @@ namespace EventRegistration.Server.Data
         {
         }
         
-        public DbSet<Role> Roless { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<Staff> Staffs { get; set; }
         public DbSet<Venue> Venues { get; set; }
     }
 }

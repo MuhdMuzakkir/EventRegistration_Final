@@ -14,8 +14,8 @@ namespace EventRegistration.Server.Repository
     public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
-        private IGenericRepository<Role> _Roles;
-        private IGenericRepository<Role> _roless;
+        private IGenericRepository<Staff> _staffs;
+        private IGenericRepository<Role> _roles;
         private IGenericRepository<Venue> _venues;
         
 
@@ -26,10 +26,10 @@ namespace EventRegistration.Server.Repository
             _context = context;
             _userManager = userManager;
         }
+        public IGenericRepository<Staff> Staffs
+           => _staffs ??= new GenericRepository<Staff>(_context);
         public IGenericRepository<Role> Roles
-           => _Roles ??= new GenericRepository<Role>(_context);
-        public IGenericRepository<Role> Roless
-            => _roless ??= new GenericRepository<Role>(_context);
+            => _roles ??= new GenericRepository<Role>(_context);
         public IGenericRepository<Venue> Venues
             => _venues ??= new GenericRepository<Venue>(_context);
   

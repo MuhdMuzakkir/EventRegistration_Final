@@ -1,0 +1,45 @@
+﻿@page "/staffs/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@using EventRegistration.Shared.Domain
+@using EventRegistration.Client.Static
+<h3 class="card-title">Create New Staff</h3>
+<hr />
+<br />
+<EditForm Model="@Staffs" OnValidSubmit="CreateStaff">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label>Role:</label>
+        <div>
+            <InputSelect @bind-Value="staff.StaffID" class="form-control">
+                <option value="">-- Select Role --</option>
+                @if (Staffs != null)
+                {
+                    foreach (var Staff in Staffs)
+                    {
+                        <option value="@staff.StaffID">@staff.StaffID</option>
+                    }
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => staff.StaffID)" />
+        </div>
+    </div>
+</EditForm>
+@code {
+    Staff staff = new Staff();
+    private IList<Staff> Staffs;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Staffs = await _client.GetFromJsonAsync<List<Staff>>("api/staffs");
+    }
+
+    private async Task CreateStaff()
+    {
+        await _client.PostAsJsonAsync(Endpoints.StaffsEndpoint, staff);
+        _navManager.NavigateTo("/staffs/");
+    }
+
+
+}

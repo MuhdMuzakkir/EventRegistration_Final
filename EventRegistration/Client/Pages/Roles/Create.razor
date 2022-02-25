@@ -1,0 +1,45 @@
+﻿@page "/roles/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@using EventRegistration.Shared.Domain
+@using EventRegistration.Client.Static
+<h3 class="card-title">Create New Role</h3>
+<hr />
+<br />
+<EditForm Model="@Roles" OnValidSubmit="CreateRole">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label>Role:</label>
+         <div>
+        <InputSelect @bind-Value="role.RoleID" class="form-control">
+            <option value="">-- Select Role --</option>
+            @if (Roles != null)
+                    {
+                        foreach (var Role in Roles)
+                        {
+                            <option value="@role.RoleID">@role.RoleID</option>
+                        }
+                    }
+        </InputSelect>
+         <ValidationMessage For="@(() => role.RoleID)" />
+    </div>
+ </div>
+</EditForm>
+@code {
+    Role role = new Role();
+    private IList<Role> Roles;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Roles = await _client.GetFromJsonAsync<List<Role>>("api/roles");
+    }
+
+    private async Task CreateRole()
+    {
+        await _client.PostAsJsonAsync(Endpoints.RolesEndpoint, role);
+        _navManager.NavigateTo("/roles/");
+    }
+    
+
+}

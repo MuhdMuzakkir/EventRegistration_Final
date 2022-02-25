@@ -1,0 +1,45 @@
+﻿@page "/venues/create/"
+@inject HttpClient _client
+@inject NavigationManager _navManager
+@using EventRegistration.Shared.Domain
+@using EventRegistration.Client.Static
+<h3 class="card-title">Create New Venues</h3>
+<hr />
+<br />
+<EditForm Model="@Venues" OnValidSubmit="CreateVenue">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label>Role:</label>
+        <div>
+            <InputSelect @bind-Value="venue.VenueID" class="form-control">
+                <option value="">-- Select Role --</option>
+                @if (Venues != null)
+                {
+                    foreach (var Venue in Venues)
+                    {
+                        <option value="@venue.VenueID">@venue.VenueID</option>
+                    }
+                }
+            </InputSelect>
+            <ValidationMessage For="@(() => venue.VenueID)" />
+        </div>
+    </div>
+</EditForm>
+@code {
+    Venue venue = new Venue();
+    private IList<Venue> Venues;
+
+    protected async override Task OnInitializedAsync()
+    {
+        Venues = await _client.GetFromJsonAsync<List<Venue>>("api/venues");
+    }
+
+    private async Task CreateVenue()
+    {
+        await _client.PostAsJsonAsync(Endpoints.VenuesEndpoint, venue);
+        _navManager.NavigateTo("/venues/");
+    }
+
+
+}

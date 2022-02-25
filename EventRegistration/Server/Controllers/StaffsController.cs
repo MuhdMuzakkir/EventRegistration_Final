@@ -13,48 +13,48 @@ namespace EventRegistration.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class RolesController : ControllerBase
+    public class StaffsController : ControllerBase
     {
         private readonly IUnitOfWork _unitofwork;
              
-        public RolesController(IUnitOfWork unitofwork)
+        public StaffsController(IUnitOfWork unitofwork)
         {
             _unitofwork = unitofwork;
         }
 
-        // GET: api/Roles
+        // GET: api/Staffes
         [HttpGet]
-        public async Task<IActionResult> GetRoles()
+        public async Task<IActionResult> GetStaffs()
         {
-            var Roles = await _unitofwork.Roles.GetAll();
-            return Ok(Roles);
+            var Staffs = await _unitofwork.Staffs.GetAll();
+            return Ok(Staffs);
         }
 
-        // GET: api/Roles/5
+        // GET: api/Staffs/5
         [HttpGet("{id}")]
-        public async Task<ActionResult> GetRole(int id)
+        public async Task<ActionResult> GetStaff(int id)
         {
-            var Role = await _unitofwork.Roles.Get(q => q.RoleID == id);
+            var Staff = await _unitofwork.Staffs.Get(q => q.StaffID == id);
 
-            if (Role == null)
+            if (Staff == null)
             {
                 return NotFound();
             }
 
-            return Ok(Role);
+            return Ok(Staff);
         }
 
-        // PUT: api/Roles/5
+        // PUT: api/Staffs/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutRole(int id, Role Role)
+        public async Task<IActionResult> PutStaff(int id, Staff Staff)
         {
-            if (id != Role.RoleID)
+            if (id != Staff.StaffID)
             {
                 return BadRequest();
             }
 
-            _unitofwork.Roles.Update(Role);
+            _unitofwork.Staffs.Update(Staff);
 
             try
             {
@@ -62,7 +62,7 @@ namespace EventRegistration.Server.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!await RoleExists(id))
+                if (!await StaffExists(id))
                 {
                     return NotFound();
                 }
@@ -75,37 +75,37 @@ namespace EventRegistration.Server.Controllers
             return NoContent();
         }
 
-        // POST: api/Roles
+        // POST: api/Staffs
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Role>> PostRole(Role Role)
+        public async Task<ActionResult<Staff>> PostStaff(Staff Staff)
         {
-            await _unitofwork.Roles.Insert(Role);
+            await _unitofwork.Staffs.Insert(Staff);
             await _unitofwork.Save(HttpContext);
 
-            return CreatedAtAction("GetRole", new { id = Role.RoleID }, Role);
+            return CreatedAtAction("GetStaff", new { id = Staff.StaffID }, Staff);
         }
 
-        // DELETE: api/Roles/5
+        // DELETE: api/Staffs/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteRole(int id)
+        public async Task<IActionResult> DeleteStaff(int id)
         {
-            var Role = await _unitofwork.Roles.Get(q => q.RoleID == id);
-            if (Role == null)
+            var Staff = await _unitofwork.Staffs.Get(q => q.StaffID == id);
+            if (Staff == null)
             {
                 return NotFound();
             }
 
-            await _unitofwork.Roles.Delete(id);
+            await _unitofwork.Staffs.Delete(id);
             await _unitofwork.Save(HttpContext);
 
             return NoContent();
         }
 
-        private async Task<bool> RoleExists(int id)
+        private async Task<bool> StaffExists(int id)
         {
-            var Role = await _unitofwork.Roles.Get(q => q.RoleID == id);
-            return Role != null;
+            var Staff = await _unitofwork.Staffs.Get(q => q.StaffID == id);
+            return Staff != null;
         }
     }
 }
